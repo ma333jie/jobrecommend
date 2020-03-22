@@ -6,22 +6,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
 import Database.MySQLConnection;
 
 /**
- * Servlet implementation class Login
+ * Servlet implementation class Register
  */
-public class Login extends HttpServlet {
+public class Register extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Login() {
+    public Register() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -38,26 +37,24 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	
 		JSONObject input = RpcHelper.readJSONObject(request);
 		String userId = input.getString("user_id");
 		String password = input.getString("password");
+		String firstname = input.getString("first_name");
+		String lastname = input.getString("last_name");
 
 		MySQLConnection connection = new MySQLConnection();
 		JSONObject obj = new JSONObject();
-		if (connection.verifyLogin(userId, password)) {
-			HttpSession session = request.getSession();
-			session.setAttribute("user_id", userId);
-			session.setMaxInactiveInterval(600);
-			obj.put("status", "OK").put("user_id", userId).put("name", connection.getFullname(userId));
+		if (connection.addUser(userId, password, firstname, lastname)) {
+			obj.put("status", "OK");
 		} else {
-			obj.put("status", "User Doesn't Exist");
-			response.setStatus(401);
+			obj.put("status", "User Already Exists");
 		}
 		connection.close();
 		RpcHelper.writeJsonObject(response, obj);
-
-
 	}
+
+	
 
 }
