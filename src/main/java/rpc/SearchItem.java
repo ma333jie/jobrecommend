@@ -40,11 +40,13 @@ public class SearchItem extends HttpServlet {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		
+		// steps to check if login 
 		HttpSession session = request.getSession(false);
 		if (session == null) {
 			response.setStatus(403);
 			return;
 		}
+		
 		String userId = request.getParameter("user_id");
 
 		double lat = Double.parseDouble(request.getParameter("lat"));
