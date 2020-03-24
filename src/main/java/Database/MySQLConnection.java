@@ -54,7 +54,22 @@ public class MySQLConnection {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public void unsetFavoriteItems(String userId, String itemId) {
+		if (conn == null) {
+			System.err.println("DB connection failed");
+			return;
+		}
+		String sql = "DELETE FROM history WHERE user_id = ? AND item_id = ?";
+		try {
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, userId);
+			statement.setString(2, itemId);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 		
 	
 	public void saveItem(Item item) {
@@ -107,21 +122,7 @@ public class MySQLConnection {
 
 		return favoriteItems;
 	}
-	public void unsetFavoriteItems(String userId, String itemId) {
-		if (conn == null) {
-			System.err.println("DB connection failed");
-			return;
-		}
-		String sql = "DELETE FROM history WHERE user_id = ? AND item_id = ?";
-		try {
-			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setString(1, userId);
-			statement.setString(2, itemId);
-			statement.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+	
 	
 	public Set<Item> getFavoriteItems(String userId) {
 		if (conn == null) {
